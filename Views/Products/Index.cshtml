@@ -1,0 +1,33 @@
+﻿@model List<MiniEcommerMVC.Models.Domain.Product>
+
+<h2>Product List</h2>
+
+
+<a asp-controller="Products" asp-action="Create">Add New Product</a>
+
+
+<table>
+    <thread>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Actions</th>
+        </tr>
+    </thread>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Price</td>
+                <td>@item.StockQuantity</td>
+                <td>
+                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
