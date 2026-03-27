@@ -6,12 +6,16 @@ namespace MiniEcommerMVC
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString));
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
@@ -20,11 +24,20 @@ namespace MiniEcommerMVC
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddAuthorization();  
+
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddRazorPages();
+
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             var app = builder.Build();
 
@@ -47,16 +60,30 @@ namespace MiniEcommerMVC
             app.UseAuthorization();
 
             app.MapStaticAssets();
+
+            app.MapControllerRoute(
+            name: "areas",
+            pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+
             app.MapControllerRoute(
                 name: "default",
-                //pattern: "{controller=Home}/{action=Index}/{id?}")
-                pattern: "{controller=Products}/{action=Create}/{id?}")
+                pattern: "{controller=Home}/{action=Index}/{id?}")
+                //pattern: "{controller=Products}/{action=Create}/{id?}")
                 .WithStaticAssets();
+
+
             app.MapControllers();
             app.MapRazorPages()
                .WithStaticAssets();
 
-            app.Run();
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                await DbInitializer.SeedRolesAndAdminAsync(services);
+            }
+
+                app.Run();
         }
     }
 }

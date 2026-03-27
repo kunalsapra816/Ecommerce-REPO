@@ -1,0 +1,13 @@
+﻿@model MiniEcommerMVC.Models.ViewModels.RegisterVM;
+
+
+<h2>Register Page</h2>
+
+<form asp-action="Register" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="email" name="Email" placeholder="Email" />
+    <input type="password" name="Password" placeholder="Password" />
+    
+    <button type="submit">Register</button>
+</form>

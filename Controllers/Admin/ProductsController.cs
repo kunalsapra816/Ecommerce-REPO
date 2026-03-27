@@ -5,11 +5,14 @@ using MiniEcommerMVC.Models.ViewModels;
 using MiniEcommerMVC.Models.Domain;
 using MiniEcommerMVC.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace MiniEcommerMVC.Controllers.Admin
 {
     //[Route("ProductHistory")]
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
 
@@ -19,8 +22,6 @@ namespace MiniEcommerMVC.Controllers.Admin
         {
             _context = context;
         }
-
-
 
 
         //[Route("CreateProduct")]

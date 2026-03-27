@@ -27,7 +27,29 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <div class="d-flex align-items-center">
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <span class="me-2">Hello @User.Identity.Name</span>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a class="btn btn-warning me-2" href="/Admin/Products">Admin Panel</a>
+                            }
+
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger">Logout</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn btn-primary me-2" href="/Account/Login">Login</a>
+                            <a class="btn btn-success" href="/Account/Register">Register</a>
+                        }
+
+                    </div>
                 </div>
             </div>
         </nav>
