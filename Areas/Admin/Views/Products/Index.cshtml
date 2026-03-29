@@ -1,0 +1,41 @@
+﻿@model List<MiniEcommerMVC.Models.Domain.Product>
+
+<div class="container mt-4">
+
+    <h2 class="mb-3">📦 Product List</h2>
+
+    <a asp-area="Admin" asp-controller="Products" asp-action="Create"
+           class="btn btn-primary mb-3">
+        + Add Product
+    </a>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th width="200px">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>₹ @item.Price</td>
+                    <td>@item.StockQuantity</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id"
+                           class="btn btn-warning btn-sm">Edit</a>
+
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MiniEcommerMVC.Areas.Admin.Views.Shared
+namespace MiniEcommerMVC.Areas.Admin.Views
 {
-    public class _AdminLayoutModel : PageModel
+    public class _ViewImportsModel : PageModel
     {
         public void OnGet()
         {
