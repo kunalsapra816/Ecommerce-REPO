@@ -29,3 +29,115 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+
+.product-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+
+/* 🔥 GLOBAL DESIGN SYSTEM */
+:root {
+    --primary: #0d6efd;
+    --dark: #111827;
+    --light-gray: #f9fafb;
+    --text-muted: #6b7280;
+}
+
+/* BODY */
+body {
+    background-color: var(--light-gray);
+}
+
+/* 🔥 PRODUCT CARD */
+.product-card {
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    background: #fff;
+}
+
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+/* IMAGE */
+.product-img-wrapper {
+    overflow: hidden;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* TITLE */
+.product-title {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* DESCRIPTION */
+.product-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* PRICE */
+.product-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--dark);
+}
+
+/* BUTTONS */
+.btn-dark {
+    background-color: var(--dark);
+    border: none;
+}
+
+.btn-light {
+    border: 1px solid #e5e7eb;
+}
+
+/* SPACING FIX */
+.container {
+    max-width: 1200px;
+}
+
+
+.admin-container {
+    max-width: 1100px;
+}
+
+
+.form-control {
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.card {
+    border-radius: 16px;
+}

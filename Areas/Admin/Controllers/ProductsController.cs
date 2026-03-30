@@ -1,59 +1,73 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;
-using MiniEcommerMVC.Models.ViewModels;
-using MiniEcommerMVC.Models.Domain;
-using MiniEcommerMVC.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-
+using MiniEcommerMVC.Models.ViewModels;
+using MiniEcommerMVC.Interfaces;
 
 namespace MiniEcommerMVC.Areas.Admin.Controllers
 {
-    //[Route("ProductHistory")]
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
     public class ProductsController : Controller
     {
+        private readonly IProductService _productService;
+        private readonly ILogger<ProductsController> _logger;
 
-        private readonly ApplicationDbContext _context;
-
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger)
         {
-            _context = context;
+            _productService = productService;
+            _logger = logger;
         }
 
+        // GET: Admin/Products
+        public async Task<IActionResult> Index()
+        {
+            var products = await _productService.GetAllAsync();
+            return View(products);
+        }
 
-        //[Route("CreateProduct")]
+        // GET: Admin/Products/Create
         public IActionResult Create()
         {
             return View();
         }
 
-
-        public async Task<IActionResult> Index()
+        // POST: Admin/Products/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateProductVM model)
         {
-            var products = await _context.Products.ToListAsync();
-            return View(products);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                await _productService.AddAsync(model);
+                TempData["success"] = "Product created successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating product");
+                ModelState.AddModelError("", "Something went wrong while creating product.");
+                return View(model);
+            }
         }
 
-
-        // GET: Products/Edit/5
+        // GET: Admin/Products/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            // find a the product
-            var product = await _context.Products.FindAsync(id);
+            var product = await _productService.GetByIdAsync(id);
 
-            // handle null
-            if(product == null)
+            if (product == null)
             {
                 return NotFound();
             }
 
-            // convert to view model
             var model = new CreateProductVM
             {
-                Id  = product.Id,
+                Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
@@ -61,118 +75,75 @@ namespace MiniEcommerMVC.Areas.Admin.Controllers
                 StockQuantity = product.StockQuantity,
             };
 
-            // send to view
             return View(model);
-
         }
 
+        // POST: Admin/Products/Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(CreateProductVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
+            try
+            {
+                var success = await _productService.UpdateAsync(model);
 
-        // Create GET Functionality
+                if (!success)
+                {
+                    return NotFound();
+                }
+
+                TempData["success"] = "Product updated successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating product");
+                ModelState.AddModelError("", "Something went wrong while updating product.");
+                return View(model);
+            }
+        }
+
+        // GET: Admin/Products/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _productService.GetByIdAsync(id);
 
-            if(product == null)
+            if (product == null)
             {
                 return NotFound();
             }
 
             return View(product);
-
-
         }
 
-        //[Route("CreateProduct")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateProductVM model)
-        {
-
-            Console.WriteLine("POST HIT"); 
-            if (!ModelState.IsValid)
-            {
-                Console.WriteLine("Model Invalid");
-                return View(model);
-            }
-
-            var product = new Product
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Price = model.Price,
-                ImageUrl = model.ImageUrl,
-                StockQuantity = model.StockQuantity
-            };
-
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-            TempData["success"] = "Product created successfully!";
-            return RedirectToAction("Index");
-        }
-
-
-
-        // Edit products detailed option
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CreateProductVM model)
-        {
-            if(!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // fetch the product with that id
-            var product = await _context.Products.FindAsync(model.Id);
-
-            // check weather this product is null or not
-            if(product == null)
-            {
-                return NotFound();
-            }
-
-
-            product.Name = model.Name;
-            product.Description = model.Description;
-            product.Price = model.Price;
-            product.ImageUrl = model.ImageUrl;
-            product.StockQuantity = model.StockQuantity;
-
-            // save changes
-            await _context.SaveChangesAsync();
-
-
-            // return as view
-            TempData["success"] = "Product updated successfully!";
-            return RedirectToAction("Index");
-
-        }
-
-
-        // post delete step
+        // POST: Admin/Products/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeletePost(int id)
         {
-            // find the product
-            var product = await _context.Products.FindAsync(id);
-
-            //check it exits
-            if(product == null)
+            try
             {
-                return NotFound();
+                var success = await _productService.DeleteAsync(id);
+
+                if (!success)
+                {
+                    return NotFound();
+                }
+
+                TempData["success"] = "Product deleted successfully!";
+                return RedirectToAction("Index");
             }
-
-            // remove that product
-            _context.Products.Remove(product);  
-
-            // save that changes
-            await _context.SaveChangesAsync();
-
-            //redirect
-            TempData["success"] = "Product deleted successfully!";
-            return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting product");
+                TempData["error"] = "Something went wrong while deleting product.";
+                return RedirectToAction("Index");
+            }
         }
     }
 }

@@ -1,24 +1,40 @@
 ﻿@model MiniEcommerMVC.Models.ViewModels.LoginVM
 
-<h2>Login Page</h2>
+<div class="auth-container">
 
-<form asp-action="Login" method="post">
-    @Html.AntiForgeryToken()
+    <div class="card auth-card shadow-sm border-0 p-4">
 
-    <div>
-        <label>Email</label>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email" style="color:red"></span>
+        <h3 class="fw-bold mb-3 text-center">Welcome Back 👋</h3>
+        <p class="text-muted text-center mb-4">Login to your account</p>
+
+        <form asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100 mt-2">
+                Login
+            </button>
+        </form>
+
+        <p class="text-center mt-3 small">
+            Don't have an account?
+            <a href="/Account/Register" class="fw-semibold">Register</a>
+        </p>
+
     </div>
 
-    <div>
-        <label>Password</label> 
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password" style="color:red"></span>
-    </div>
-
-    <button type="submit">Login</button>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

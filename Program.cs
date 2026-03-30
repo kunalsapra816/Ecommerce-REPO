@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MiniEcommerMVC.Data;
+using MiniEcommerMVC.Interfaces;
+using MiniEcommerMVC.Services;
 
 namespace MiniEcommerMVC
 {
@@ -30,6 +32,9 @@ namespace MiniEcommerMVC
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
 
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+
 
             builder.Services.AddAuthorization();  
 
@@ -38,6 +43,8 @@ namespace MiniEcommerMVC
             builder.Services.AddRazorPages();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
 
             var app = builder.Build();
 
