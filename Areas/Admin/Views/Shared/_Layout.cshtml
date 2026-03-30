@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- 🔷 NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/Admin/Products">Admin Dashboard</a>
+
+            <div class="d-flex align-items-center">
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <span class="text-white me-3">
+                        👋 Hello @User.Identity.Name
+                    </span>
+
+                    <a class="btn btn-light me-2" href="/">Go to Site</a>
+
+                    <form asp-controller="Account" asp-action="Logout" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </nav>
+
+    <!-- 🔷 MAIN CONTENT -->
+    <div class="container mt-4">
+        @RenderBody()
+    </div>
+
+    <!-- 🔷 FOOTER -->
+    <footer class="text-center mt-5 text-muted">
+        <hr />
+        <p>© 2026 Admin Panel</p>
+    </footer>
+
+    <!-- 🔷 SCRIPTS -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- 🔔 TOAST NOTIFICATION -->
+    @if (TempData["success"] != null)
+    {
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="toast" class="toast align-items-center text-bg-success border-0">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        @TempData["success"]
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- 🔔 TOAST SCRIPT -->
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var toastEl = document.getElementById('toast');
+                if (toastEl) {
+                    var toast = new bootstrap.Toast(toastEl, {
+                        delay: 3000
+                    });
+                    toast.show();
+                }
+            });
+    </script>
+
+</body>
+</html>

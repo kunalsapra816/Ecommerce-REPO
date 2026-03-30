@@ -23,6 +23,7 @@ namespace MiniEcommerMVC.Controllers
             (
                 SignInManager<IdentityUser> signInManager,
                 UserManager<IdentityUser> userManager)
+                
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -126,12 +127,12 @@ namespace MiniEcommerMVC.Controllers
         //Logout
         //Removes authentication cookie and logout user
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Login");
-        }
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Logout()
+{
+    await _signInManager.SignOutAsync();
+    return RedirectToAction("Login");
+}
 
     }
 }
